@@ -1,5 +1,5 @@
 from ..util import validate_email
-from . import Server
+from .base import Server
 
 class Install(Server):
 	name = 'Install'

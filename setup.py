@@ -1,15 +1,13 @@
-#!/usr/bin/env python
-import os
 import sys
-
-import easyengine
 
 try:
     from setuptools import setup, find_packages
 except ImportError:
     from distutils.core import setup
 
-version = easyengine.__version__
+__version__ = None
+with open('easyengine/version.py') as f:
+    exec(f.read())
 
 if sys.argv[-1] == 'publish':
     os.system('cd docs && make html')
@@ -27,7 +25,7 @@ with open('HISTORY.rst') as history_file:
 
 setup(
     name='python-easyengine',
-    version=version,
+    version=__version__,
     description="""EasyEngine Python Module""",
     long_description=readme + '\n\n' + history,
     author='Cubo',
@@ -35,17 +33,11 @@ setup(
     url='https://github.com/cubope/python-easyengine',
     keywords=['python', 'easyengine', 'management'],
     install_requires = [
-        'paramiko>=2.0.2'
+        'paramiko>=2.0.2',
     ],
     extras_require={
-        ':python_version=="3.2"': ['paramiko'],
-        ':python_version=="3.3"': ['paramiko'],
-        ':python_version=="3.4"': ['paramiko'],
-        ':python_version=="3.5"': ['paramiko'],
     },
-    packages=[
-        'easyengine',
-    ],
+    packages=find_packages(),
     include_package_data=True,
     license="Apache License 2.0",
     classifiers=[

@@ -1,4 +1,4 @@
-from . import Server
+from .base import Server
 from .. import EasyEngineException
 from ..util import validate_domain
 
