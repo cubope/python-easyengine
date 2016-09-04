@@ -1,0 +1,28 @@
+# We do not use sudo
+sudo: false
+
+# Python versions for matrix
+language: python
+python:
+  - "2.7"
+  - "3.2"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+
+# Command to install dependencies, e.g. pip install -r requirements.txt
+install:
+  - pip install -e
+  # Coverage 4.0 no longer supports py32. Install an older version before
+  # coveralls tries to install the latest
+  - if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then travis_retry pip install 'coverage<4.0'; fi
+  - pip install coveralls
+  - pip install -r requirements.txt
+
+# Command to run tests, e.g. python setup.py test
+script:
+  - coverage run --source=boilerplate manage.py test
+
+# Report to coveralls
+after_success:
+  - coveralls

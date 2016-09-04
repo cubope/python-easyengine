@@ -1,0 +1,7 @@
+include AUTHORS.rst
+include CONTRIBUTING.rst
+include HISTORY.rst
+include LICENSE
+include README.rst
+recursive-include easyengine *.html *py
+recursive-include demo *.html *py
