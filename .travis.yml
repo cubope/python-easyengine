@@ -4,21 +4,23 @@ sudo: false
 # Python versions for matrix
 language: python
 python:
-  - "2.7"
-  - "3.2"
-  - "3.3"
-  - "3.4"
-  - "3.5"
+  - '2.6'
+  - '2.7'
+  - '3.2'
+  - '3.3'
+  - '3.4'
+  - '3.5'
 
 # Command to install dependencies, e.g. pip install -r requirements.txt
 install:
-  - pip install -e
-  # Coverage 4.0 no longer supports py32. Install an older version before
-  # coveralls tries to install the latest
-  - if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then travis_retry pip install 'coverage<4.0'; fi
-  - pip install coveralls
+  - pip install .
   - pip install -r requirements.txt
+  - pip install coveralls
 
+script:
+  - flake8 --ignore=F401 easyengine
+  - flake8 --ignore=E123,E126,E128,E501 tests
+  - nosetests
 # Report to coveralls
 after_success:
   - coveralls

@@ -24,7 +24,7 @@ def validate_domain(domain):
 	for label in domain.split("."):
 		if len(label) > 63:
 			raise EasyEngineException(
-				("The label '%(label)s' is too long (maximum is 63 characters)." % {'label': label})
+				"The label '%(label)s' is too long (maximum is 63 characters)." % {'label': label})
 		if not HOSTNAME_LABEL_PATTERN.match(label):
 			raise EasyEngineException("Unallowed characters in label '%(label)s'." % {'label': label})
 
