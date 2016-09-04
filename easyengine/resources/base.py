@@ -30,6 +30,9 @@ class Server(object):
 			self._port = int(port)
 
 	def _connect(self):
+		if self._client:
+			return
+
 		kwargs = {
 			'username': self._username,
 			'password': self._password
@@ -46,9 +49,22 @@ class Server(object):
 		if self._client:
 			self._client.close()
 			self._client = False
-	
+
 	def execute(self, command):
+		if not self._client:
+			self._connect()
+
 		return self._client.exec_command(command)
+
+	def is_install(self):		
+		stdin, stdout, stderr = self.execute('ee')
+
+		response = ''.join(stderr.readlines())
+
+		if 'ee: command not found' in response:
+			return False
+
+		return True
 
 	def response(self, data):
 		self._close()
