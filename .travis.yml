@@ -18,8 +18,6 @@ install:
   - pip install coveralls
 
 script:
-  - flake8 --ignore=F401 easyengine
-  - flake8 --ignore=E123,E126,E128,E501 tests
   - nosetests
 # Report to coveralls
 after_success:
