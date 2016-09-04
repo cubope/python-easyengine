@@ -19,10 +19,6 @@ install:
   - pip install coveralls
   - pip install -r requirements.txt
 
-# Command to run tests, e.g. python setup.py test
-script:
-  - coverage run --source=boilerplate manage.py test
-
 # Report to coveralls
 after_success:
   - coveralls
