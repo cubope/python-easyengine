@@ -30,10 +30,7 @@ class Site(Server):
 		return service
 
 	def exists(self):
-		if hasattr(self, '_domain'):
-			if not self._client:
-				self._connect()
-			
+		if hasattr(self, '_domain'):			
 			stdin, stdout, stderr = self.execute('ee site info %s' % self._domain)
 
 			response = ''.join(stdout.readlines())
@@ -46,9 +43,6 @@ class Site(Server):
 		raise EasyEngineException
 
 	def create(self, domain, service=None):
-		if not self._client:
-			self._connect()
-
 		self._domain = validate_domain(domain)
 		
 		if self.exists():
@@ -81,11 +75,7 @@ class Site(Server):
 
 		return self.response(data)
 
-
 	def delete(self, domain):
-		if not self._client:
-			self._connect()
-
 		self._domain = validate_domain(domain)
 
 		if not self.exists():
@@ -97,9 +87,6 @@ class Site(Server):
 		return self.response(data)
 
 	def list(self):
-		if not self._client:
-			self._connect()
-
 		self._data.update({'sites': list()})
 
 		stdin, stdout, stderr = self.execute('ee site list')
@@ -112,9 +99,6 @@ class Site(Server):
 		return self.response(self._data)
 
 	def info(self, domain):
-		if not self._client:
-			self._connect()
-
 		self._domain = validate_domain(domain)
 
 		if not self.exists():
@@ -144,9 +128,6 @@ class Site(Server):
 		return self.response(self._data)
 
 	def update(self, domain, service=None, user=None, password=None):
-		if not self._client:
-			self._connect()
-
 		self._domain = validate_domain(domain)
 
 		if not self.exists():
@@ -179,9 +160,6 @@ class Site(Server):
 		return self.response(False)
 
 	def enable(self, domain):
-		if not self._client:
-			self._connect()
-
 		self._domain = validate_domain(domain)
 
 		if not self.exists():
@@ -193,9 +171,6 @@ class Site(Server):
 		return self.response(True)
 
 	def disable(self, domain):
-		if not self._client:
-			self._connect()
-
 		self._domain = validate_domain(domain)
 
 		if not self.exists():
