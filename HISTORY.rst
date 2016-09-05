@@ -2,6 +2,11 @@
 
 History
 -------
+0.1.6 (2016-09-5)
+++++++++++++++++++
+* Add: CSR generation
+* Add: SSL install and uninstall
+
 0.1.4 (2016-09-5)
 ++++++++++++++++++
 * Fix: Init file

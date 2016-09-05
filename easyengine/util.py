@@ -1,6 +1,12 @@
 import re, socket
 from . import EasyEngineException
 
+def validate_country(country):
+	if len(country) > 2:
+		raise EasyEngineException
+
+	return contry
+
 def validate_domain(domain):
 	HOSTNAME_LABEL_PATTERN = re.compile("(?!-)[A-Z\d-]+(?<!-)$", re.IGNORECASE)
 	

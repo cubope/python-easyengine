@@ -180,3 +180,131 @@ class Site(Server):
 		stdout.readlines()
 
 		return self.response(True)
+
+	def generate_csr(self, domain, country, state, city, company, industry, email):
+		self._domain   = validate_domain(domain)
+		self._path     = '/var/www/%s' % self._domain
+		self._country  = validate_country(country)
+		self._state    = state
+		self._city     = city
+		self._company  = company
+		self._industry = industry
+		self._email    = validate_email(email)
+
+		is not self.exists():
+			raise EasyEngineException
+
+		# Delete certs folders
+		command = (
+			'rm -rf %s/cert/' % self.path
+		)
+		stdin, stdout, stderr = self.execute(command)
+		stdout.readlines()
+
+		command = (
+			'mkdir %s/cert/ && ' % self._path +
+			'cd %s/cert/ && ' % self._path +
+			'openssl genrsa -out %s.key 2048 && ' %  self._domain +
+			'openssl req -new -key %(domain)s.key -out %(domain)s.csr -sha256' % dict(domain=self._domain) 
+		)
+		stdin, stdout, stderr = self.execute(command)
+
+		payload = '%(country)s\n%(state)s\n%(city)s\n%(company)s\n%(industry)s\n%(domain)s\n%(email)s\n\n\n' % dict(
+			country  = self._country,
+			state    = self._state,
+			city     = self._city,
+			company  = self._company,
+			industry = self._industry,
+			domain   = self._domain,
+			email    = self._email,
+		)
+		stdin.write(payload)
+		stdin.flush()
+		stdout.readlines()
+
+		command = 'cd %s/cert/ && cat %s.csr' % (self._path, self._domain)
+		stdin, stdout, stderr = self.execute(command)
+		response = ''.join(stdout.readlines())
+
+		self._data.update({'csr': response})
+
+		return self.response(self._data)
+
+	def install_ssl(self, domain, certificate_code, ca_chain):
+		self._domain           = validate_domain(domain)
+		self._path             = '/var/www/%s' % self._domain
+		self._certificate_code = certificate_code
+		self._ca_chain         = ca_chain
+
+		is not self.exists():
+			raise EasyEngineException
+
+		# Write certificate
+		command = 'echo "%(certificate_code)s" >> %(path)s/cert/%(domain)s.crt' % dict(
+			certificate_code = self._certificate_code,
+			path             = self._path,
+			domain           = self._domain
+		)
+		stdin, stdout, stderr = self.execute(command)
+		stdout.readlines()
+
+		# Write CA chain
+		command = 'echo "%(ca_chain)s" >> %(path)s/cert/%(domain)s.crt' % dict(
+			ca_chain = self._ca_chain,
+			path     = self._path,
+			domain   = self._domain
+		)
+		stdin, stdout, stderr = self.execute(command)
+		stdout.readlines()
+
+		# Verify matching
+		command = 'diff  <(openssl x509 -in %(path)s/cert/%(domain)s.crt -pubkey -noout) <(openssl rsa -in %(path)s/cert/%(domain)s.key -pubout)' % dict(
+			path   = self._path,
+			domain = self._domain
+		)
+		stdin, stdout, stderr = self.execute(command)
+		response = ''.join(stdout.readlines())
+
+		if 'writing RSA key' in response:
+			# Insert information
+			command = (
+				"sed -i '/www.%(domain)s;/a\    listen 80 443 ssl spdy;" % dict(domain=self._domain) +
+				"\\n    ssl on;" +
+				"\\n    ssl_certificate %(path)s/cert/%(domain)s.crt;" % dict(path=self._path, domain=self._domain) +
+				"\\n    ssl_certificate_key %(path)s/cert/%(domain)s.key;' /etc/nginx/sites-available/%(domain)s" % dict(path=self._path, domain=self._domain)
+			)
+			stdin, stdout, stderr = self.execute(command)
+			stdout.readlines()
+
+			# Reload nginx
+			command = 'service nginx reload'
+			stdin, stdout, stderr = self.execute(command)
+			stdout.readlines()
+
+			return self.response(True)
+
+		return self.response(False)
+
+	def uninstall_ssl(self, domain):
+		self._domain = validate_domain(domain)
+		self._path   = '/var/www/%s' % self._domain
+
+		is not self.exists():
+			raise EasyEngineException
+
+		command = (
+			"sed -i '/listen 80 443 ssl spdy;/d' /etc/nginx/sites-available/%(domain)s && " % dict(domain=self._domain) +
+			"sed -i '/ssl on;/d' /etc/nginx/sites-available/%(domain)s && " % dict(domain=self._domain) +
+			"sed -i '/ssl_certificate %(path)s/cert/%(domain)s.crt;/d' /etc/nginx/sites-available/%(domain)s && " % dict(path=self._path, domain=self._domain) +
+			"sed -i '/ssl_certificate_key %(path)s/cert/%(domain)s.key;/d' /etc/nginx/sites-available/%(domain)s" % dict(path=self._path, domain=self._domain)
+		)
+		stdin, stdout, stderr = self.execute(command)
+		stdout.readlines()
+
+		command = (
+			"rm -rf %(path)s/cert/%(domain)s.crt" % dict(path=self._path, domain=self._domain)
+		)
+		stdin, stdout, stderr = self.execute(command)
+		stdout.readlines()
+
+		return self.response(True)
