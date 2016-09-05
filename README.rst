@@ -1,5 +1,5 @@
 ======================
-Boilerplate for Django
+Python EasyEngine
 ======================
 
 Write Django as usual, and let ``python-easyengine`` help you with the usually painfull stuff.
