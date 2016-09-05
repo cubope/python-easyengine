@@ -2,17 +2,13 @@
 
 History
 -------
-0.1.9 (2016-09-5)
+0.1.10 (2016-09-5)
 ++++++++++++++++++
 * Fix: Site create output
-
-0.1.8 (2016-09-5)
-++++++++++++++++++
+* Fix: Site create output
 * Add: Clean support
-
-0.1.7 (2016-09-5)
-++++++++++++++++++
 * Fix: Typo
+* Fix: Get string from domain string
 
 0.1.6 (2016-09-5)
 ++++++++++++++++++
