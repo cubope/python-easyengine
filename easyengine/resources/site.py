@@ -191,7 +191,7 @@ class Site(Server):
 		self._industry = industry
 		self._email    = validate_email(email)
 
-		is not self.exists():
+		if not self.exists():
 			raise EasyEngineException
 
 		# Delete certs folders
@@ -236,7 +236,7 @@ class Site(Server):
 		self._certificate_code = certificate_code
 		self._ca_chain         = ca_chain
 
-		is not self.exists():
+		if not self.exists():
 			raise EasyEngineException
 
 		# Write certificate
@@ -289,7 +289,7 @@ class Site(Server):
 		self._domain = validate_domain(domain)
 		self._path   = '/var/www/%s' % self._domain
 
-		is not self.exists():
+		if not self.exists():
 			raise EasyEngineException
 
 		command = (
