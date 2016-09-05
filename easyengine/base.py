@@ -1,4 +1,5 @@
 from easyengine.resources import (
+	Clean,
 	Install,
 	Site,
 	Secure,
