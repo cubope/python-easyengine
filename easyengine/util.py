@@ -8,6 +8,8 @@ def validate_country(country):
 	return contry
 
 def validate_domain(domain):
+	domain = str(domain)
+
 	HOSTNAME_LABEL_PATTERN = re.compile("(?!-)[A-Z\d-]+(?<!-)$", re.IGNORECASE)
 	
 	if not domain:
