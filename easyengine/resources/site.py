@@ -63,17 +63,17 @@ class Site(Server):
 			if 'Successfully created site' in line:
 				url = line.replace('\x1b[94mSuccessfully created site ', '').replace('\x1b[0m\n','')
 
-				self.data.update({'url': url})
+				self._data.update({'url': url})
 			elif 'WordPress admin user:' in line:
 				username = line.replace('\x1b[94m\x1b[0mWordPress admin user : ', '').replace('\x1b[0m\n', '')
 
-				self.data.update({'username': username})
+				self._data.update({'username': username})
 			elif 'WordPress admin user password:' in line:
 				password   = line.replace('\x1b[94m\x1b[0mWordPress admin user password : ', '').replace('\x1b[0m\n', '')		
 				
-				self.data.update({'password': password})
+				self._data.update({'password': password})
 
-		return self.response(data)
+		return self.response(self._data)
 
 	def delete(self, domain):
 		self._domain = validate_domain(domain)
@@ -84,7 +84,7 @@ class Site(Server):
 		stdin, stdout, stderr = self.execute('ee site delete %s --no-prompt' % self._domain)
 		stdout.readlines()
 
-		return self.response(data)
+		return self.response(True)
 
 	def list(self):
 		self._data.update({'sites': list()})

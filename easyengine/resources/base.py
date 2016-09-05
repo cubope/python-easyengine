@@ -61,7 +61,7 @@ class Server(object):
 
 		response = ''.join(stderr.readlines())
 
-		if 'ee: command not found' in response:
+		if 'command not found' in response:
 			return False
 
 		return True
