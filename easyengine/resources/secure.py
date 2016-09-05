@@ -28,11 +28,11 @@ class Secure(Server):
 
 			for line in lines:
 				if 'HTTP authentication user name' in line:
-					user = line.replace('Provide HTTP authentication user name ['. '').replace(']', '').lstrip().rstrip('\r\n')
+					user = line.replace('Provide HTTP authentication user name [', '').replace(']', '').lstrip().rstrip('\r\n')
 					
 					self._user = user
 				elif 'HTTP authentication password' in line:
-					password = line.replace('Provide HTTP authentication password ['. '').replace(']', '').lstrip().rstrip('\r\n')
+					password = line.replace('Provide HTTP authentication password [', '').replace(']', '').lstrip().rstrip('\r\n')
 					
 					self._password = password
 
