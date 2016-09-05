@@ -2,7 +2,7 @@
 
 History
 -------
-0.1.13 (2016-09-5)
+0.1.15 (2016-09-5)
 ++++++++++++++++++
 * Fix: Site create output
 * Fix: Site create output
@@ -10,6 +10,7 @@ History
 * Fix: Typo
 * Fix: Get string from domain string
 * Fix: Retrieve user and pass at creation
+* Fix: Responses
 
 0.1.6 (2016-09-5)
 ++++++++++++++++++

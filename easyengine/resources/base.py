@@ -58,9 +58,6 @@ class Server(object):
 		return "<%s %s>" % (self.__class__.__name__, self.name[0:5])
 
 	def _close(self):
-		if hasattr(self, '_data'):
-			self._data = {}
-
 		if self._client:
 			self._client.close()
 			self._client = False

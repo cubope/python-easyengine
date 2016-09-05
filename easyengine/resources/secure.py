@@ -4,7 +4,6 @@ from ..util import validate_ip, validate_port
 
 class Secure(Server):
 	name  = 'Secure'
-	_data = {}
 
 	def auth(self, user=None, password=None):
 		command = 'ee secure --auth'
@@ -36,12 +35,12 @@ class Secure(Server):
 					
 					self._password = password
 
-		self._data.update({
+		data = {
 			'user': self._user,
 			'password':	self._password
-		})
+		}
 
-		return self.response(self._data)
+		return self.response(data)
 
 	def port(self, port):
 		self._port = validate_port(port)

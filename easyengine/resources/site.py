@@ -15,8 +15,6 @@ class Site(Server):
 	
 	_service = 'wp'
 
-	_data = {}
-
 	def is_wordpress(self):
 		if self._service in self.service_wordpress:
 			return True
@@ -58,22 +56,23 @@ class Site(Server):
 			stdin.flush()
 
 		lines = stdout.readlines()
+		data  = {}
 
 		for line in lines:
 			if 'Successfully created site' in line:
 				url = line.replace('\x1b[94mSuccessfully created site ', '').replace('\x1b[0m\n','')
 
-				self._data.update({'url': url})
+				data.update({'url': url})
 			elif 'WordPress admin user : ' in line:
 				username = line.replace('\x1b[94m\x1b[0m','').replace('WordPress admin user : ', '').replace('\x1b[0m\n', '')
 
-				self._data.update({'username': username})
+				data.update({'username': username})
 			elif 'WordPress admin user password : ' in line:
 				password   = line.replace('\x1b[94m\x1b[0m','').replace('WordPress admin user password : ', '').replace('\x1b[0m\n', '')		
 				
-				self._data.update({'password': password})
+				data.update({'password': password})
 
-		return self.response(self._data)
+		return self.response(data)
 
 	def delete(self, domain):
 		self._domain = validate_domain(domain)
@@ -87,16 +86,16 @@ class Site(Server):
 		return self.response(True)
 
 	def list(self):
-		self._data.update({'sites': list()})
+		data = list()
 
 		stdin, stdout, stderr = self.execute('ee site list')
 		lines = stdout.readlines()
 
 		for line in lines:
 			domain = line.replace('\x1b[94m\x1b[0m', '').replace('\x1b[0m\n','')
-			self._data['sites'].append(domain)
+			data.append(domain)
 
-		return self.response(self._data)
+		return self.response(data)
 
 	def info(self, domain):
 		self._domain = validate_domain(domain)
@@ -106,26 +105,27 @@ class Site(Server):
 
 		stdin, stdout, stderr = self.execute('ee site info %s' % self._domain)
 		lines = stdout.readlines()
+		data  = {}
 
 		for line in lines:
 			if 'Webroot' in line:
 				webroot = line.replace('Webroot', '').lstrip().rstrip('\r\n')
 				
-				self._data.update({'webroot': webroot})
+				data.update({'webroot': webroot})
 			elif 'DB_NAME' in line:
 				db_name = line.replace('DB_NAME', '').lstrip().rstrip('\r\n')
 				
-				self._data.update({'db_name': db_name})
+				data.update({'db_name': db_name})
 			elif 'DB_USER' in line:
 				db_user = line.replace('DB_USER', '').lstrip().rstrip('\r\n')
 				
-				self._data.update({'db_user': db_user})
+				data.update({'db_user': db_user})
 			elif 'DB_PASS' in line:
 				db_pass = line.replace('DB_PASS', '').lstrip().rstrip('\r\n')
 				
-				self._data.update({'db_pass': db_pass})
+				data.update({'db_pass': db_pass})
 
-		return self.response(self._data)
+		return self.response(data)
 
 	def update(self, domain, service=None, user=None, password=None):
 		self._domain = validate_domain(domain)
@@ -226,9 +226,9 @@ class Site(Server):
 		stdin, stdout, stderr = self.execute(command)
 		response = ''.join(stdout.readlines())
 
-		self._data.update({'csr': response})
+		data = {'csr': response}
 
-		return self.response(self._data)
+		return self.response(data)
 
 	def install_ssl(self, domain, certificate_code, ca_chain):
 		self._domain           = validate_domain(domain)
