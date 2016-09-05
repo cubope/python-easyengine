@@ -1,13 +1,5 @@
-import re
+import re, socket
 from . import EasyEngineException
-
-def validate_email(email):
-	EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
-
-	if not EMAIL_REGEX.match(email):
-		raise EasyEngineException
-
-	return email
 
 def validate_domain(domain):
 	HOSTNAME_LABEL_PATTERN = re.compile("(?!-)[A-Z\d-]+(?<!-)$", re.IGNORECASE)
@@ -29,3 +21,29 @@ def validate_domain(domain):
 			raise EasyEngineException("Unallowed characters in label '%(label)s'." % {'label': label})
 
 	return domain
+
+def validate_email(email):
+	EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
+
+	if not EMAIL_REGEX.match(email):
+		raise EasyEngineException
+
+	return email
+
+def validate_ip(ip):
+	try:
+		socket.inet_aton(addr)
+		return ip
+	except socket.error:
+		raise EasyEngineException
+
+def validate_port(port):
+	port = int(port)
+
+	if port < 1000 or port > 65535:
+		raise EasyEngineException
+
+	return port
+
+def validate_user(user):
+  return re.sub(r'\W+', '-', user)
