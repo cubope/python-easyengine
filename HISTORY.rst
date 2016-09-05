@@ -2,13 +2,14 @@
 
 History
 -------
-0.1.10 (2016-09-5)
+0.1.11 (2016-09-5)
 ++++++++++++++++++
 * Fix: Site create output
 * Fix: Site create output
 * Add: Clean support
 * Fix: Typo
 * Fix: Get string from domain string
+* Fix: Retrieve user and pass at creation
 
 0.1.6 (2016-09-5)
 ++++++++++++++++++
