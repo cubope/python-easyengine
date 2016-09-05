@@ -64,11 +64,11 @@ class Site(Server):
 				url = line.replace('\x1b[94mSuccessfully created site ', '').replace('\x1b[0m\n','')
 
 				self._data.update({'url': url})
-			elif 'WordPress admin user' in line:
+			elif 'WordPress admin user : ' in line:
 				username = line.replace('\x1b[94m\x1b[0m','').replace('WordPress admin user : ', '').replace('\x1b[0m\n', '')
 
 				self._data.update({'username': username})
-			elif 'WordPress admin user password' in line:
+			elif 'WordPress admin user password : ' in line:
 				password   = line.replace('\x1b[94m\x1b[0m','').replace('WordPress admin user password : ', '').replace('\x1b[0m\n', '')		
 				
 				self._data.update({'password': password})

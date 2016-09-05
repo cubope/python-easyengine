@@ -2,7 +2,7 @@
 
 History
 -------
-0.1.11 (2016-09-5)
+0.1.12 (2016-09-5)
 ++++++++++++++++++
 * Fix: Site create output
 * Fix: Site create output
