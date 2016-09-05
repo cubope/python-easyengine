@@ -7,6 +7,8 @@ from easyengine.resources import (
 )
 
 class EasyEngine(object):
+	name = 'EasyEngine'
+
 	def __init__(self, host, username, password, port=None, *args, **kwargs):
 		self._host     = host
 		self._username = username
@@ -20,6 +22,18 @@ class EasyEngine(object):
 		self.site    = Site(self._host, **self.auth)
 		self.secure  = Secure(self._host, **self.auth)
 		self.stack   = Stack(self._host, **self.auth)
+
+	def __eq__(self, other):
+		return (isinstance(other, self.__class__) and self.__dict__ == other.__dict__)
+
+	def __hash__(self):
+		return hash(frozenset(self.__dict__))
+
+	def __ne__(self, other):
+		return not self.__eq__(other)
+
+	def __str__(self):
+		return "<%s %s>" % (self.__class__.__name__, self.name[0:5])
 
 	@property
 	def auth(self):

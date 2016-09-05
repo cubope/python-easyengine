@@ -45,7 +45,22 @@ class Server(object):
 		self._client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 		self._client.connect(self._host, **kwargs)
 
+	def __eq__(self, other):
+		return (isinstance(other, self.__class__) and self.__dict__ == other.__dict__)
+
+	def __hash__(self):
+		return hash(frozenset(self.__dict__))
+
+	def __ne__(self, other):
+		return not self.__eq__(other)
+
+	def __str__(self):
+		return "<%s %s>" % (self.__class__.__name__, self.name[0:5])
+
 	def _close(self):
+		if hasattr(self, '_data'):
+			self._data = {}
+
 		if self._client:
 			self._client.close()
 			self._client = False
