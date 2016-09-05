@@ -2,7 +2,7 @@
 Python EasyEngine
 ======================
 
-Write Django as usual, and let ``python-easyengine`` help you with the usually painfull stuff.
+Remotely manage EasyEngine servers with  ``python-easyengine``.
 
 
 .. image:: https://img.shields.io/travis/cubope/python-easyengine/master.svg
