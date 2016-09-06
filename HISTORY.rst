@@ -2,7 +2,7 @@
 
 History
 -------
-0.1.16 (2016-09-5)
+0.1.18 (2016-09-5)
 ++++++++++++++++++
 * Fix: Site create output
 * Fix: Site create output
@@ -13,6 +13,7 @@ History
 * Fix: Responses
 * Fix: Missing requirements
 * Fix: Util
+* Fix: Variable
 
 0.1.6 (2016-09-5)
 ++++++++++++++++++

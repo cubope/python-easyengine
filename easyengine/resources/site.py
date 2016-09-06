@@ -196,7 +196,7 @@ class Site(Server):
 
 		# Delete certs folders
 		command = (
-			'rm -rf %s/cert/' % self.path
+			'rm -rf %s/cert/' % self._path
 		)
 		stdin, stdout, stderr = self.execute(command)
 		stdout.readlines()
