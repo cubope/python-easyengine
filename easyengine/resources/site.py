@@ -268,7 +268,8 @@ class Site(Server):
 		if len(errors):
 			# Insert information
 			command = (
-				"sed -i '/www.%(domain)s;/a\    listen 80 443 ssl spdy;" % dict(domain=self._domain) +
+				"sed -i '/www.%(domain)s;/a\    listen 80;" % dict(domain=self._domain) +
+				"\\n    listen 443 ssl spdy;" +
 				"\\n    ssl on;" +
 				"\\n    ssl_certificate %(path)s/cert/%(domain)s.crt;" % dict(path=self._path, domain=self._domain) +
 				"\\n    ssl_certificate_key %(path)s/cert/%(domain)s.key;' /etc/nginx/sites-available/%(domain)s" % dict(path=self._path, domain=self._domain)
@@ -301,7 +302,8 @@ class Site(Server):
 			raise EasyEngineException
 
 		command = (
-			"sed -i '/listen 80 443 ssl spdy;/d' /etc/nginx/sites-available/%(domain)s && " % dict(domain=self._domain) +
+			"sed -i '/listen 80;/d' /etc/nginx/sites-available/%(domain)s && " % dict(domain=self._domain) +
+			"sed -i '/listen 443 ssl spdy;/d' /etc/nginx/sites-available/%(domain)s && " % dict(domain=self._domain) +
 			"sed -i '/ssl on;/d' /etc/nginx/sites-available/%(domain)s && " % dict(domain=self._domain) +
 			"sed -i '/ssl_certificate %(path)s/cert/%(domain)s.crt;/d' /etc/nginx/sites-available/%(domain)s && " % dict(path=self._path, domain=self._domain) +
 			"sed -i '/ssl_certificate_key %(path)s/cert/%(domain)s.key;/d' /etc/nginx/sites-available/%(domain)s" % dict(path=self._path, domain=self._domain)
