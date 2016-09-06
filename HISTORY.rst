@@ -2,7 +2,7 @@
 
 History
 -------
-0.1.15 (2016-09-5)
+0.1.16 (2016-09-5)
 ++++++++++++++++++
 * Fix: Site create output
 * Fix: Site create output
@@ -11,6 +11,7 @@ History
 * Fix: Get string from domain string
 * Fix: Retrieve user and pass at creation
 * Fix: Responses
+* Fix: Missing requirements
 
 0.1.6 (2016-09-5)
 ++++++++++++++++++
