@@ -12,6 +12,7 @@ History
 * Fix: Retrieve user and pass at creation
 * Fix: Responses
 * Fix: Missing requirements
+* Fix: Util
 
 0.1.6 (2016-09-5)
 ++++++++++++++++++

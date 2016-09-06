@@ -5,7 +5,7 @@ def validate_country(country):
 	if len(country) > 2:
 		raise EasyEngineException
 
-	return contry
+	return country
 
 def validate_domain(domain):
 	domain = str(domain)
