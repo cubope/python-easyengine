@@ -247,7 +247,7 @@ class Site(Server):
 		)
 		stdin, stdout, stderr = self.execute(command)
 		stdout.readlines()
-
+		
 		# Write CA chain
 		command = 'echo "%(ca_chain)s" >> %(path)s/cert/%(domain)s.crt' % dict(
 			ca_chain = self._ca_chain,
@@ -282,8 +282,16 @@ class Site(Server):
 			stdout.readlines()
 
 			return self.response(True)
+		else:
+			# Remove
+			command = 'rm -rf  %(path)s/cert/%(domain)s.crt' % dict(
+				path             = self._path,
+				domain           = self._domain
+			)
+			stdin, stdout, stderr = self.execute(command)
+			stdout.readlines()
 
-		return self.response(False)
+			return self.response(False)
 
 	def uninstall_ssl(self, domain):
 		self._domain = validate_domain(domain)
