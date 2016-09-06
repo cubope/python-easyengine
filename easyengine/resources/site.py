@@ -263,9 +263,9 @@ class Site(Server):
 			domain = self._domain
 		)
 		stdin, stdout, stderr = self.execute(command)
-		response = ''.join(stdout.readlines())
+		errors = stderr.readlines()
 
-		if 'writing RSA key' in response:
+		if len(errors):
 			# Insert information
 			command = (
 				"sed -i '/www.%(domain)s;/a\    listen 80 443 ssl spdy;" % dict(domain=self._domain) +
