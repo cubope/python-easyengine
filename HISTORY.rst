@@ -2,6 +2,10 @@
 
 History
 -------
+0.2.6 (2016-10-10)
+++++++++++++++++++
+* Connect using the local id_rsa
+
 0.2.2 (2016-09-5)
 ++++++++++++++++++
 * Fix: Site create output

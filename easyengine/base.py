@@ -9,10 +9,11 @@ from easyengine.resources import (
 class EasyEngine(object):
 	name = 'EasyEngine'
 
-	def __init__(self, host, username, password, port=None, *args, **kwargs):
+	def __init__(self, host, username=None, password=None, port=None, key_path=None, *args, **kwargs):
 		self._host     = host
-		self._username = username
-		self._password = password
+		self._username = username if username else None
+		self._password = password if username else None
+		self._key_path = key_path if key_path else None
 		
 		if port:
 			self._port   = int(port)

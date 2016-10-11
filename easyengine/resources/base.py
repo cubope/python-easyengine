@@ -5,7 +5,7 @@ class Server(object):
 	
 	_client = False
 
-	def __init__(self, host, username, password, port=None, *args, **kwargs):
+	def __init__(self, host, username=None, password=None, port=None, key_path=None, *args, **kwargs):
 		"""
 		Connect to an SSH server and authenticate to it.
 
@@ -23,8 +23,9 @@ class Server(object):
 		:raises socket.error: if a socket error occurred while connecting
 		"""
 		self._host     = host
-		self._username = username
-		self._password = password
+		self._username = username if username else None
+		self._password = password if password else None
+		self._key_path = key_path if key_path else None
 
 		if port:
 			self._port = int(port)
@@ -33,15 +34,30 @@ class Server(object):
 		if self._client:
 			return
 
-		kwargs = {
-			'username': self._username,
-			'password': self._password
-		}
+		kwargs = {}
+
+		if self._username:
+			kwargs.update({
+				'username': self._username
+			})
+		
+		if self._password:
+			kwargs.update({
+				'password': self._password
+			})
+
+		if self._key_path:
+			kwargs.update({
+				'pkey': paramiko.RSAKey.from_private_key_file(self._key_path)
+			})
 
 		if hasattr(self, '_port'):
-			kwargs.update({'port': self._port	})
+			kwargs.update({
+				'port': self._port
+			})
 
 		self._client = paramiko.SSHClient()
+		self._client.load_system_host_keys()
 		self._client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 		self._client.connect(self._host, **kwargs)
 
