@@ -9,7 +9,7 @@ from easyengine.resources import (
 class EasyEngine(object):
 	name = 'EasyEngine'
 
-	def __init__(self, host, username=None, password=None, port=None, key_path=None, *args, **kwargs):
+	def __init__(self, host, username=None, password=None, key_path=None, port=None, *args, **kwargs):
 		self._host     = host
 		self._username = username if username else None
 		self._password = password if username else None
@@ -39,9 +39,18 @@ class EasyEngine(object):
 	@property
 	def auth(self):
 		kwargs = {
-			'username': self._username,
-			'password': self._password,
+			'username': self._username
 		}
+
+		if self._password:
+			kwargs.update({
+				'password': self._password	
+			})
+
+		if self._key_path:
+			kwargs.update({
+				'key_path': self._key_path	
+			})
 
 		if hasattr(self, '_port'):
 			kwargs.update({'port': self._port})

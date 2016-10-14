@@ -5,7 +5,7 @@ class Server(object):
 	
 	_client = False
 
-	def __init__(self, host, username=None, password=None, port=None, key_path=None, *args, **kwargs):
+	def __init__(self, host, username=None, password=None, key_path=None, port=None, *args, **kwargs):
 		"""
 		Connect to an SSH server and authenticate to it.
 
@@ -25,7 +25,11 @@ class Server(object):
 		self._host     = host
 		self._username = username if username else None
 		self._password = password if password else None
-		self._key_path = key_path if key_path else None
+		
+		if key_path:
+			self._pkey = paramiko.RSAKey.from_private_key_file(key_path)
+		else:
+			self._pkey = None
 
 		if port:
 			self._port = int(port)
@@ -46,9 +50,9 @@ class Server(object):
 				'password': self._password
 			})
 
-		if self._key_path:
+		if self._pkey:
 			kwargs.update({
-				'pkey': paramiko.RSAKey.from_private_key_file(self._key_path)
+				'pkey': self._pkey,
 			})
 
 		if hasattr(self, '_port'):
