@@ -8,7 +8,7 @@ class Clean(Server):
     _choice = None
 
     valid_services = [
-        None, 'fastcgi', 'memcache', 'opcache', 'pagespeed', 'redir', 'all'
+        None, 'fastcgi', 'memcache', 'opcache', 'pagespeed', 'redis', 'all'
     ]
 
     def is_valid_service(self):
