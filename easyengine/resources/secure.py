@@ -1,65 +1,72 @@
 from .base import Server
 from .. import EasyEngineException
-from ..util import validate_ip, validate_port
+from ..util import validate_ip, validate_port, validate_user
+
 
 class Secure(Server):
-	name  = 'Secure'
+    name = 'Secure'
 
-	def auth(self, user=None, password=None):
-		command = 'ee secure --auth'
-		
-		if not user and not password:
-			credentials = False
-		elif user and password:
-			self._user     = validate_user(user)
-			self._password = password
-			command = '%s %s %s' % (command, self._user, self._password)
-		else:
-			raise EasyEngineException
-		
-		stdin, stdout, stderr = self.execute(command)
+    def auth(self, user=None, password=None):
+        command = 'ee secure --auth'
 
-		if not credentials:
-			stdin.write('\n\n')
-			stdin.flush()
+        if not user and not password:
+            credentials = False
+        elif user and password:
+            self._user = validate_user(user)
+            self._password = password
+            command = '%s %s %s' % (command, self._user, self._password)
+        else:
+            raise EasyEngineException
 
-			lines = stdout.readlines()
+        stdin, stdout, stderr = self.execute(command)
 
-			for line in lines:
-				if 'HTTP authentication user name' in line:
-					user = line.replace('Provide HTTP authentication user name [', '').replace(']', '').lstrip().rstrip('\r\n')
-					
-					self._user = user
-				elif 'HTTP authentication password' in line:
-					password = line.replace('Provide HTTP authentication password [', '').replace(']', '').lstrip().rstrip('\r\n')
-					
-					self._password = password
+        if not credentials:
+            stdin.write('\n\n')
+            stdin.flush()
 
-		data = {
-			'user': self._user,
-			'password':	self._password
-		}
+            lines = stdout.readlines()
 
-		return self.response(data)
+            for line in lines:
+                if 'HTTP authentication user name' in line:
+                    user = line.replace(
+                        'Provide HTTP authentication user name [', ''
+                    ).replace(']', '').lstrip().rstrip('\r\n')
 
-	def port(self, port):
-		self._port = validate_port(port)
+                    self._user = user
+                elif 'HTTP authentication password' in line:
+                    password = line.replace(
+                        'Provide HTTP authentication password [', ''
+                    ).replace(']', '').lstrip().rstrip('\r\n')
 
-		stdin, stdout, stderr = self.execute('ee secure --port %d' % self._port)
-		stdout.readlines()
+                    self._password = password
 
-		return self.response(True)
+        data = {
+            'user': self._user,
+            'password': self._password
+        }
 
-	def ip(self, ip):
-		if isinstance(ip, list):
-			for ip_single in ip:
-				validate_ip(ip_single)
+        return self.response(data)
 
-			ip = ','.join(ip)
-		else:
-			ip = validate_ip(ip)
+    def port(self, port):
+        self._port = validate_port(port)
 
-		stdin, stdout, stderr = self.execute('ee secure --ip %s' % ip)
-		stdout.readlines()
+        stdin, stdout, stderr = self.execute(
+            'ee secure --port %d' % self._port
+        )
+        stdout.readlines()
 
-		return self.response(True)
+        return self.response(True)
+
+    def ip(self, ip):
+        if isinstance(ip, list):
+            for ip_single in ip:
+                validate_ip(ip_single)
+
+            ip = ','.join(ip)
+        else:
+            ip = validate_ip(ip)
+
+        stdin, stdout, stderr = self.execute('ee secure --ip %s' % ip)
+        stdout.readlines()
+
+        return self.response(True)

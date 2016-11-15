@@ -1,6 +1,6 @@
 from .exceptions import (
-	EasyEngineException
+    EasyEngineException
 )
 from .base import (
-	EasyEngine
+    EasyEngine
 )

@@ -1,107 +1,112 @@
 import paramiko
 
+
 class Server(object):
-	name = 'Server'
-	
-	_client = False
+    name = 'Server'
 
-	def __init__(self, host, username=None, password=None, key_path=None, port=None, *args, **kwargs):
-		"""
-		Connect to an SSH server and authenticate to it.
+    _client = False
 
-		:param str hostname: the server to connect to
-		:param int port: the server port to connect to
-		:param str username:
-			the username to authenticate as (defaults to the current local
-			username)
-		:param str password:
-			a password to use for authentication or for unlocking a private key
+    def __init__(
+        self, host, username=None, password=None, key_path=None, port=None,
+        *args, **kwargs
+    ):
+        """
+        Connect to an SSH server and authenticate to it.
 
-		:raises AuthenticationException: if authentication failed
-		:raises SSHException: if there was any other error connecting or
-			establishing an SSH session
-		:raises socket.error: if a socket error occurred while connecting
-		"""
-		self._host     = host
-		self._username = username if username else None
-		self._password = password if password else None
-		
-		if key_path:
-			self._pkey = paramiko.RSAKey.from_private_key_file(key_path)
-		else:
-			self._pkey = None
+        :param str hostname: the server to connect to
+        :param int port: the server port to connect to
+        :param str username:
+            the username to authenticate as (defaults to the current local
+            username)
+        :param str password:
+            a password to use for authentication or for unlocking a private key
 
-		if port:
-			self._port = int(port)
+        :raises AuthenticationException: if authentication failed
+        :raises SSHException: if there was any other error connecting or
+            establishing an SSH session
+        :raises socket.error: if a socket error occurred while connecting
+        """
+        self._host = host
+        self._username = username if username else None
+        self._password = password if password else None
 
-	def _connect(self):
-		if self._client:
-			return
+        if key_path:
+            self._pkey = paramiko.RSAKey.from_private_key_file(key_path)
+        else:
+            self._pkey = None
 
-		kwargs = {}
+        if port:
+            self._port = int(port)
 
-		if self._username:
-			kwargs.update({
-				'username': self._username
-			})
-		
-		if self._password:
-			kwargs.update({
-				'password': self._password
-			})
+    def _connect(self):
+        if self._client:
+            return
 
-		if self._pkey:
-			kwargs.update({
-				'pkey': self._pkey,
-			})
+        kwargs = {}
 
-		if hasattr(self, '_port'):
-			kwargs.update({
-				'port': self._port
-			})
+        if self._username:
+            kwargs.update({
+                'username': self._username
+            })
 
-		self._client = paramiko.SSHClient()
-		self._client.load_system_host_keys()
-		self._client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-		self._client.connect(self._host, **kwargs)
+        if self._password:
+            kwargs.update({
+                'password': self._password
+            })
 
-	def __eq__(self, other):
-		return (isinstance(other, self.__class__) and self.__dict__ == other.__dict__)
+        if self._pkey:
+            kwargs.update({
+                'pkey': self._pkey,
+            })
 
-	def __hash__(self):
-		return hash(frozenset(self.__dict__))
+        if hasattr(self, '_port'):
+            kwargs.update({
+                'port': self._port
+            })
 
-	def __ne__(self, other):
-		return not self.__eq__(other)
+        self._client = paramiko.SSHClient()
+        self._client.load_system_host_keys()
+        self._client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        self._client.connect(self._host, **kwargs)
 
-	def __str__(self):
-		return "<%s %s>" % (self.__class__.__name__, self.name[0:5])
+    def __eq__(self, other):
+        return (
+            isinstance(
+                other, self.__class__
+            ) and self.__dict__ == other.__dict__
+        )
 
-	def _close(self):
-		if self._client:
-			self._client.close()
-			self._client = False
+    def __hash__(self):
+        return hash(frozenset(self.__dict__))
 
-	def execute(self, command):
-		if not self._client:
-			self._connect()
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
-		return self._client.exec_command(command)
+    def __str__(self):
+        return "<%s %s>" % (self.__class__.__name__, self.name[0:5])
 
-	def is_install(self):		
-		stdin, stdout, stderr = self.execute('ee')
+    def _close(self):
+        if self._client:
+            self._client.close()
+            self._client = False
 
-		response = ''.join(stderr.readlines())
+    def execute(self, command):
+        if not self._client:
+            self._connect()
 
-		if 'command not found' in response:
-			return False
+        return self._client.exec_command(command)
 
-		return True
+    def is_install(self):
+        stdin, stdout, stderr = self.execute('ee')
 
-	def response(self, data):
-		self._close()
+        response = ''.join(stderr.readlines())
 
-		return data
+        if 'command not found' in response:
+            return False
 
-	def __str__(self):
-		return self.name
+        return True
+
+    def response(self, data):
+        self._close()
+
+        return data

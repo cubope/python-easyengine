@@ -2,6 +2,11 @@
 
 History
 -------
+0.4.0 (2016-10-14)
+++++++++++++++++++
+* Fix: No able to clean up
+* Fix: PEP8
+
 0.2.9 (2016-10-14)
 ++++++++++++++++++
 * Connect using the local id_rsa
