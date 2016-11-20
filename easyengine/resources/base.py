@@ -29,8 +29,9 @@ class Server(object):
         self._host = host
         self._username = username if username else None
         self._password = password if password else None
+        self._key_path = key_path if key_path else None
 
-        if key_path:
+        if self._key_path:
             self._pkey = paramiko.RSAKey.from_private_key_file(key_path)
         else:
             self._pkey = None
