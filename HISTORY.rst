@@ -2,6 +2,10 @@
 
 History
 -------
+0.4.4 (2017-02-28)
+++++++++++++++++++
+* Add: Let's Encrypt support
+
 0.4.2 (2016-11-20)
 ++++++++++++++++++
 * New: Allow access to `key_path`
