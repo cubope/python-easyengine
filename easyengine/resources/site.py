@@ -207,6 +207,41 @@ class Site(Server):
 
         return self.response(True)
 
+    def lets_encrypt(self, domain):
+        self._domain = validate_domain(domain)
+
+        if not self.exists():
+            raise EasyEngineException
+
+        stdin, stdout, stderr = self.execute(
+            'ee site update %s --le=on' % self._domain
+        )
+        stdin.write('y\n')
+        stdin.flush()
+        lines = stdout.readlines()
+
+        redirection = '/etc/nginx/conf.d/force-ssl-%s.conf' % self._domain
+
+        if 'Your cert will expire within' not in lines[-1]:
+            return self.response(False)
+
+        stdin, stdout, stderr = self.execute(
+            'rm -rf etc/nginx/conf.d/force-ssl-%s.conf' % self._domain
+        )
+        lines = stdout.readlines()
+
+        stdin, stdout, stderr = self.execute(
+            (
+                "sed -i '/www.%(domain)s;/a\    listen 80;'" +
+                " /etc/nginx/sites-available/%(domain)s.conf"
+            ) % dict(
+                domain=self._domain
+            )
+        )
+        stdout.readlines()
+
+        return self.response(True)
+
     def generate_csr(
         self, domain, country, state, city, company, industry, email
     ):
