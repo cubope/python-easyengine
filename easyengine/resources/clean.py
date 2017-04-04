@@ -5,8 +5,6 @@ from .. import EasyEngineException
 class Clean(Server):
     name = 'Clean'
 
-    _choice = None
-
     valid_services = [
         None, 'fastcgi', 'memcache', 'opcache', 'pagespeed', 'redis', 'all'
     ]
@@ -25,7 +23,7 @@ class Clean(Server):
             self._service = service
 
         if not self.is_valid_service():
-            return self.response(False)
+            raise EasyEngineException("Invalid service.")
 
         if self._service:
             stdin, stdout, stderr = self.execute(
