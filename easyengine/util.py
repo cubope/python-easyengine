@@ -5,7 +5,7 @@ from . import EasyEngineException
 
 def validate_country(country):
     if len(country) > 2:
-        raise EasyEngineException
+        raise EasyEngineException("Invalid country.")
 
     return country
 
@@ -16,7 +16,7 @@ def validate_domain(domain):
     HOSTNAME_LABEL_PATTERN = re.compile("(?!-)[A-Z\d-]+(?<!-)$", re.IGNORECASE)
 
     if not domain:
-        raise EasyEngineException
+        raise EasyEngineException("No value was provided.")
 
     if len(domain) > 255:
         raise EasyEngineException(
@@ -44,7 +44,7 @@ def validate_email(email):
     EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
 
     if not EMAIL_REGEX.match(email):
-        raise EasyEngineException
+        raise EasyEngineException("Invalid email.")
 
     return email
 
@@ -61,7 +61,7 @@ def validate_port(port):
     port = int(port)
 
     if port < 1000 or port > 65535:
-        raise EasyEngineException
+        raise EasyEngineException("Not a valid port value.")
 
     return port
 
