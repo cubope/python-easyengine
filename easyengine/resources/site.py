@@ -50,7 +50,9 @@ class Site(Server):
         self._domain = validate_domain(domain)
 
         if self.exists():
-            raise EasyEngineException
+            raise EasyEngineException(
+                'Site "%s" already exists.' % self._domain
+            )
 
         if service:
             self._service = self.validate_service(service)
@@ -92,7 +94,9 @@ class Site(Server):
         self._domain = validate_domain(domain)
 
         if not self.exists():
-            raise EasyEngineException
+            raise EasyEngineException(
+                'Site "%s" does not exists.' % self._domain
+            )
 
         stdin, stdout, stderr = self.execute(
             'ee site delete %s --no-prompt' % self._domain
@@ -119,7 +123,9 @@ class Site(Server):
         self._domain = validate_domain(domain)
 
         if not self.exists():
-            raise EasyEngineException
+            raise EasyEngineException(
+                'Site "%s" does not exists.' % self._domain
+            )
 
         stdin, stdout, stderr = self.execute('ee site info %s' % self._domain)
         lines = stdout.readlines()
@@ -149,7 +155,9 @@ class Site(Server):
         self._domain = validate_domain(domain)
 
         if not self.exists():
-            raise EasyEngineException
+            raise EasyEngineException(
+                'Site "%s" does not exists.' % self._domain
+            )
 
         if user and password:
             self._user = user
@@ -170,7 +178,7 @@ class Site(Server):
 
             if 'Password updated successfully' in response:
                 return self.response(True)
-        else:
+        elif hasattr(self, '_service'):
             stdin, stdout, stderr = self.execute(
                 'ee site update %s --%s' % (self._domain, self._service)
             )
@@ -178,6 +186,8 @@ class Site(Server):
 
             if 'Successfully updated' in response:
                 return self.response(True)
+        else:
+            raise EasyEngineException('Unavailable task.')
 
         return self.response(False)
 
@@ -185,7 +195,9 @@ class Site(Server):
         self._domain = validate_domain(domain)
 
         if not self.exists():
-            raise EasyEngineException
+            raise EasyEngineException(
+                'Site "%s" does not exists.' % self._domain
+            )
 
         stdin, stdout, stderr = self.execute(
             'ee site enable %s' % self._domain
@@ -198,7 +210,9 @@ class Site(Server):
         self._domain = validate_domain(domain)
 
         if not self.exists():
-            raise EasyEngineException
+            raise EasyEngineException(
+                'Site "%s" does not exists.' % self._domain
+            )
 
         stdin, stdout, stderr = self.execute(
             'ee site disable %s' % self._domain
@@ -211,7 +225,9 @@ class Site(Server):
         self._domain = validate_domain(domain)
 
         if not self.exists():
-            raise EasyEngineException
+            raise EasyEngineException(
+                'Site "%s" does not exists.' % self._domain
+            )
 
         stdin, stdout, stderr = self.execute(
             'ee site update %s --le=on' % self._domain
@@ -219,8 +235,6 @@ class Site(Server):
         stdin.write('y\n')
         stdin.flush()
         lines = stdout.readlines()
-
-        redirection = '/etc/nginx/conf.d/force-ssl-%s.conf' % self._domain
 
         if 'Your cert will expire within' not in lines[-1]:
             return self.response(False)
@@ -255,7 +269,9 @@ class Site(Server):
         self._email = validate_email(email)
 
         if not self.exists():
-            raise EasyEngineException
+            raise EasyEngineException(
+                'Site "%s" does not exists.' % self._domain
+            )
 
         # Delete certs folders
         command = (
@@ -303,7 +319,9 @@ class Site(Server):
         self._ca_chain = ca_chain
 
         if not self.exists():
-            raise EasyEngineException
+            raise EasyEngineException(
+                'Site "%s" does not exists.' % self._domain
+            )
 
         # Write certificate
         command = (
@@ -326,7 +344,10 @@ class Site(Server):
         stdout.readlines()
 
         # Verify matching
-        command = 'diff  <(openssl x509 -in %(path)s/cert/%(domain)s.crt -pubkey -noout) <(openssl rsa -in %(path)s/cert/%(domain)s.key -pubout)' % dict(
+        command = (
+            'diff  <(openssl x509 -in %(path)s/cert/%(domain)s.crt -pubkey '
+            '-noout) <(openssl rsa -in %(path)s/cert/%(domain)s.key -pubout)'
+        ) % dict(
             path=self._path,
             domain=self._domain
         )
@@ -371,7 +392,9 @@ class Site(Server):
         self._path = '/var/www/%s' % self._domain
 
         if not self.exists():
-            raise EasyEngineException
+            raise EasyEngineException(
+                'Site "%s" does not exists.' % self._domain
+            )
 
         command = (
             "sed -i '/listen 80;/d' /etc/nginx/sites-available/%(domain)s && " % dict(domain=self._domain) +

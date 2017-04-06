@@ -32,7 +32,7 @@ setup(
     author_email='somos@cubo.pe',
     url='https://github.com/cubope/python-easyengine',
     keywords=['python', 'easyengine', 'management'],
-    install_requires = [
+    install_requires=[
         'paramiko>=2.0.2',
     ],
     extras_require={

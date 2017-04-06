@@ -30,7 +30,9 @@ class Clean(Server):
                 'ee clean --%s' % self._service
             )
         else:
-            stdin, stdout, stderr = self.execute('ee clean')
+            stdin, stdout, stderr = self.execute(
+                'ee clean'
+            )
 
         stdout.readlines()
 

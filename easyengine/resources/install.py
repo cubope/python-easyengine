@@ -7,7 +7,7 @@ class Install(Server):
 
     def do(self, name, email):
         if self.is_install():
-            return self.response(False)
+            raise Exception("EasyEngine already installed.")
 
         self._name = str(name)
         self._email = validate_email(email)
@@ -35,7 +35,7 @@ class Install(Server):
 
     def update(self):
         if not self.is_install():
-            return self.response(False)
+            raise Exception("EasyEngine not installed.")
 
         stdin, stdout, stderr = self.execute('ee update')
         """ Agree """

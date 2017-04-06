@@ -2,6 +2,10 @@
 
 History
 -------
+0.5.0 (2017-04-06)
+++++++++++++++++++
+* Fix: Raise Exceptions when should raise them
+
 0.4.4 (2017-02-28)
 ++++++++++++++++++
 * Add: Let's Encrypt support
